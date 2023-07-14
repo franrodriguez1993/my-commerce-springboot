@@ -50,7 +50,6 @@ public class BuyerController extends BaseControllerImpl<Buyer, BuyerServiceImpl>
 
   }
 
-  @Override
   @GetMapping("/{id}")
   public ResponseEntity<?> getOne(@PathVariable Long id) {
     try {
