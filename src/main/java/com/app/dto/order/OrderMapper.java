@@ -21,4 +21,6 @@ public interface OrderMapper {
   @Mapping(target = "order", ignore = true)
   @Mapping(target = "product", ignore = true)
   OrderDetail toOrderDetailFromOrderDetailBody(OrderDetailBodyDTO odbdto);
+
+  OrderDTO toOrderDTOFromOrder(Order order);
 }

@@ -1,5 +1,6 @@
 package com.app.controllers;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -59,6 +60,15 @@ public class BuyerController extends BaseControllerImpl<Buyer, BuyerServiceImpl>
       if (e.getMessage().equals("BUYER_NOT_FOUND")) {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("BUYER_NOT_FOUND");
       }
+      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
+    }
+  }
+
+  @GetMapping("/list")
+  public ResponseEntity<?> listBuyers(Pageable pageable) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(service.listBuyers(pageable));
+    } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
     }
   }

@@ -12,7 +12,6 @@ import lombok.*;
 public class OrderDetailsDTO extends _DTOEntity {
   private Long id;
   private ProductDTO product;
-  private OrderDTO order;
   private int quantity;
   private double subtotal;
 }

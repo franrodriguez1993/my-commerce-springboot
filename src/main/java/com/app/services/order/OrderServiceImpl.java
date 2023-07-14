@@ -1,5 +1,6 @@
 package com.app.services.order;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.app.dto.order.OrderBodyDTO;
+import com.app.dto.order.OrderDTO;
+import com.app.dto.order.OrderDetailBodyDTO;
+import com.app.dto.order.OrderMapper;
 import com.app.entities.Buyer;
 import com.app.entities.Order;
 import com.app.entities.OrderDetail;
@@ -47,36 +52,55 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
   /* === CREATE ORDER === */
 
   @Override
-  public Order create(Order order) throws Exception {
+  public OrderDTO create(OrderBodyDTO orderBody) throws Exception {
 
     try {
 
+      // from orderbody to order entity:
+      Order order = OrderMapper.INSTANCE.toOrderFroOrderBodyDTO(orderBody);
+
+      // Check buyer:
+      Optional<Buyer> buyer = buyerRepository.findById(orderBody.getBuyer_id());
+
+      if (!buyer.isPresent()) {
+        throw new Exception("BUYER_NOT_FOUND");
+      }
+      order.setBuyer(buyer.get());
+
       // VALIDATE AND UPDATE PRODUCTS QUANTITY:
-      List<OrderDetail> od = order.getDetails();
+      List<OrderDetailBodyDTO> detailList = orderBody.getDetails();
       double totalAmount = 0;
 
-      for (OrderDetail o : od) {
-        Optional<Product> pOptional = productRepository.findById(o.getProduct().getId());
+      List<OrderDetail> odEntities = new ArrayList<OrderDetail>();
+
+      for (OrderDetailBodyDTO od : detailList) {
+        Optional<Product> product = productRepository.findById(od.getProduct_id());
         // check existence:
-        if (!pOptional.isPresent()) {
+        if (!product.isPresent()) {
           throw new Exception("PRODUCT_NOT_FOUND");
         }
-        Product p = pOptional.get();
+        Product p = product.get();
         // check stock:
-        if (p.getStock() < o.getQuantity()) {
+        if (p.getStock() < od.getQuantity()) {
           throw new Exception("INVALID_QUANTITY");
         }
         // check amount:
-        double subtotal = p.getPrice() * o.getQuantity();
-        if (subtotal != o.getSubtotal()) {
+        double subtotal = p.getPrice() * od.getQuantity();
+        if (subtotal != od.getSubtotal()) {
           throw new Exception("INVALID_AMOUNT");
         }
 
         // update quantity and sum subtotal:
-        p.setStock(p.getStock() - o.getQuantity());
+        p.setStock(p.getStock() - od.getQuantity());
         productRepository.save(p);
-        o.setOrder(order); // bidirection
-        totalAmount += o.getSubtotal();
+
+        // pass to dto to entity detail:
+        OrderDetail ode = OrderMapper.INSTANCE.toOrderDetailFromOrderDetailBody(od);
+        ode.setProduct(p);
+        ode.setOrder(order); // bidirection
+        odEntities.add(ode); // add entity to list
+
+        totalAmount += od.getSubtotal();
       }
       // Check total amount:
       if (totalAmount != order.getTotalAmount()) {
@@ -84,8 +108,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
       }
 
       order.setDate(new Date()); // set timestamp
+      order.setDetails(odEntities);
+
       // create and return order:
-      return orderRepository.save(order);
+      Order newOrder = orderRepository.save(order);
+
+      return OrderMapper.INSTANCE.toOrderDTOFromOrder(newOrder);
 
     } catch (Exception e) {
       throw new Exception(e.getMessage());

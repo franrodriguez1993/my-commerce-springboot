@@ -4,6 +4,8 @@ import java.security.SecureRandom;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +79,20 @@ public class BuyerServiceImpl extends BaseServiceImpl<Buyer, Long> implements Bu
     } catch (Exception e) {
       throw new Exception(e.getMessage());
     }
+  }
+
+  @Override
+  public Page<BuyerDTO> listBuyers(Pageable pageable) throws Exception {
+    try {
+
+      Page<Buyer> buyersEntities = buyerRepository.pageBuyers("", pageable);
+
+      return BuyerMapper.INSTANCE.toBuyerDtos(buyersEntities);
+
+    } catch (Exception e) {
+      throw new Exception(e.getMessage());
+    }
+
   }
 
 }

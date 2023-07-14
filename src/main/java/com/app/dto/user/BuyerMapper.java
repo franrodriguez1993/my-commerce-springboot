@@ -1,9 +1,8 @@
 package com.app.dto.user;
 
-import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import com.app.entities.Buyer;
 
@@ -18,7 +17,9 @@ public interface BuyerMapper {
 
   // to buyers DTO
 
-  List<BuyerDTO> toBuyerDtos(List<Buyer> buyers);
+  default Page<BuyerDTO> toBuyerDtos(Page<Buyer> buyers) {
+    return buyers.map(this::toBuyerDto);
+  };
 
   // to buyer entity
   Buyer toBuyer(BuyerBodyDTO buyerbody);

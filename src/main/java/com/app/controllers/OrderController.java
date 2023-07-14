@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.dto.order.OrderBodyDTO;
 import com.app.entities.Order;
 import com.app.services.order.OrderServiceImpl;
 
@@ -21,13 +22,13 @@ public class OrderController extends BaseControllerImpl<Order, OrderServiceImpl>
 
   /* === CREATE ORDER === */
   @PostMapping("/create")
-  public ResponseEntity<?> create(@RequestBody Order order) throws Exception {
+  public ResponseEntity<?> create(@RequestBody OrderBodyDTO order) throws Exception {
     try {
 
       return ResponseEntity.status(HttpStatus.CREATED).body(service.create(order));
 
     } catch (Exception e) {
-      if (e.getMessage().equals("PRODUCT_NOT_FOUND")) {
+      if (e.getMessage().equals("PRODUCT_NOT_FOUND") || e.getMessage().equals("BUYER_NOT_FOUND")) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
       } else if (e.getMessage().equals("INVALID_QUANTITY") || e.getMessage().equals("INVALID_AMOUNT")
           || e.getMessage().equals("INVALID_TOTAL_AMOUNT")) {

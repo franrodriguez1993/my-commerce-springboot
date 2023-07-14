@@ -16,7 +16,7 @@ public class OrderDTO extends _DTOEntity {
 
   private Long id;
   private BuyerDTO buyer;
-  private int installment;
+  private int installments;
   private Date date;
   private List<OrderDetailsDTO> details;
   private double totalAmount;
