@@ -35,10 +35,10 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     super(baseRepository);
   }
 
-  /* -- SPECIFIC METHODS */
+  /** LIST BY BRAND **/
 
   @Override
-  public Page<Product> listByBrand(String brand, Pageable pageable) throws Exception {
+  public Page<ProductDTO> listByBrand(String brand, Pageable pageable) throws Exception {
 
     try {
 
@@ -51,7 +51,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
         Brand searchedBrand = optionalBrand.get();
 
         Page<Product> productList = productRepository.listByBrand(searchedBrand.getId(), pageable);
-        return productList;
+        return ProductMapper.INSTANCE.toProductsDTO(productList);
 
       } else {
         throw new Exception("BRAND_NOT_FOUND");
@@ -62,8 +62,10 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     }
   }
 
+  /** LIST BY CATEGORY **/
+
   @Override
-  public Page<Product> listByCategory(String category, Pageable pageable) throws Exception {
+  public Page<ProductDTO> listByCategory(String category, Pageable pageable) throws Exception {
     try {
 
       String categoryname = category.replace("_", " ");
@@ -75,7 +77,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
         Category searchedCategory = optionalCategory.get();
 
         Page<Product> productList = productRepository.listByCategory(searchedCategory.getId(), pageable);
-        return productList;
+        return ProductMapper.INSTANCE.toProductsDTO(productList);
 
       } else {
         throw new Exception("CATEGORY_NOT_FOUND");
@@ -110,6 +112,40 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 
       Product newProduct = productRepository.save(entity);
       return ProductMapper.INSTANCE.toProductDTO(newProduct);
+
+    } catch (Exception e) {
+      throw new Exception(e.getMessage());
+    }
+  }
+
+  @Override
+  public ProductDTO update(Long id, ProductBodyDTO productdto) throws Exception {
+    try {
+      Optional<Product> po = productRepository.findById(id);
+
+      // Check if exists:
+      if (!po.isPresent()) {
+        throw new Exception("PRODUCT_NOT_FOUND");
+      }
+      // Map to product:
+      Product updateProduct = ProductMapper.INSTANCE.toProductFromBody(productdto);
+      updateProduct.setId(id);
+
+      // check brand:
+      Optional<Brand> brand = brandRepository.findById(productdto.getBrand_id());
+      if (!brand.isPresent()) {
+        throw new Exception("BRAND_NOT_FOUND");
+      }
+      updateProduct.setBrand(brand.get());
+
+      // Check category:
+      Optional<Category> category = categoryRepository.findById(productdto.getCategory_id());
+      if (!category.isPresent()) {
+        throw new Exception("CATEGORY_NOT_FOUND");
+      }
+      updateProduct.setCategory(category.get());
+
+      return ProductMapper.INSTANCE.toProductDTO(productRepository.save(updateProduct));
 
     } catch (Exception e) {
       throw new Exception(e.getMessage());

@@ -71,6 +71,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
       List<OrderDetailBodyDTO> detailList = orderBody.getDetails();
       double totalAmount = 0;
 
+      // list of order details entities checked
       List<OrderDetail> odEntities = new ArrayList<OrderDetail>();
 
       for (OrderDetailBodyDTO od : detailList) {

@@ -12,6 +12,8 @@ public interface BuyerService extends BaseService<Buyer, Long> {
 
   Buyer register(BuyerBodyDTO buyer) throws Exception;
 
+  BuyerDTO update(Long id, BuyerBodyDTO buyer) throws Exception;
+
   Page<BuyerDTO> listBuyers(Pageable pageable) throws Exception;
 
   BuyerDTO getById(Long id) throws Exception;

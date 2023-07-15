@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,9 +25,9 @@ import jakarta.validation.Valid;
 @RequestMapping(path = "api/v1/product")
 public class ProductController extends BaseControllerImpl<Product, ProductServiceImpl> {
 
-  /* SPECIFIC ROUTES */
+  /* CREATE PRODUCT */
 
-  @PostMapping("/create")
+  @PostMapping("")
   public ResponseEntity<?> create(@Valid @RequestBody ProductBodyDTO product, BindingResult bindingResult) {
     try {
       if (bindingResult.hasErrors()) {
@@ -43,6 +45,33 @@ public class ProductController extends BaseControllerImpl<Product, ProductServic
     }
   }
 
+  /* UPDATE PRODUCT */
+
+  @PutMapping("/{id}")
+  public ResponseEntity<?> update(@Valid @RequestBody ProductBodyDTO product, @PathVariable Long id,
+      BindingResult bindingResult) {
+    try {
+
+      if (bindingResult.hasErrors()) {
+        String errorMsg = bindingResult.getFieldError().getDefaultMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMsg);
+      }
+
+      return ResponseEntity.status(HttpStatus.OK).body(service.update(id, product));
+
+    } catch (Exception e) {
+      String errorMessage = e.getMessage();
+      if (errorMessage.equals("PRODUCT_NOT_FOUND") || errorMessage.equals("BRAND_NOT_FOUND")
+          || errorMessage.equals("CATEGORY_NOT_FOUND")) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+      } else {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
+      }
+    }
+  }
+
+  /* LIST BY BRAND */
+
   @GetMapping("/brand")
   public ResponseEntity<?> findByBrand(@RequestParam String brand, Pageable pageable) {
     try {
@@ -57,6 +86,7 @@ public class ProductController extends BaseControllerImpl<Product, ProductServic
       }
     }
   }
+  /* LIST BY CATEGORY */
 
   @GetMapping("/category")
   public ResponseEntity<?> findByCategory(@RequestParam String category, Pageable pageable) {

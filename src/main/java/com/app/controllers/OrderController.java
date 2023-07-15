@@ -21,7 +21,7 @@ import com.app.services.order.OrderServiceImpl;
 public class OrderController extends BaseControllerImpl<Order, OrderServiceImpl> {
 
   /* === CREATE ORDER === */
-  @PostMapping("/create")
+  @PostMapping("")
   public ResponseEntity<?> create(@RequestBody OrderBodyDTO order) throws Exception {
     try {
 
@@ -40,7 +40,7 @@ public class OrderController extends BaseControllerImpl<Order, OrderServiceImpl>
   }
 
   /* === LIST ORDER === */
-  @GetMapping("/list/{bid}")
+  @GetMapping("/{bid}")
   public ResponseEntity<?> listOrders(@PathVariable Long bid, Pageable pageable) throws Exception {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.listOrders(bid, pageable));

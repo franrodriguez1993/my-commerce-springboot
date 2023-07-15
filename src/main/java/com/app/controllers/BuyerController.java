@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +24,7 @@ import jakarta.validation.Valid;
 @RequestMapping(path = "api/v1/buyer")
 public class BuyerController extends BaseControllerImpl<Buyer, BuyerServiceImpl> {
 
-  // @Override
-  @PostMapping("/register")
+  @PostMapping("")
   public ResponseEntity<?> save(@Valid @RequestBody BuyerBodyDTO buyer, BindingResult bindingResult) {
     try {
       if (bindingResult.hasErrors()) {
@@ -63,11 +63,30 @@ public class BuyerController extends BaseControllerImpl<Buyer, BuyerServiceImpl>
     }
   }
 
-  @GetMapping("/list")
+  @GetMapping("")
   public ResponseEntity<?> listBuyers(Pageable pageable) {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.listBuyers(pageable));
     } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
+    }
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<?> update(@Valid @RequestBody BuyerBodyDTO buyer, @PathVariable Long id,
+      BindingResult bindingResult) {
+    try {
+
+      if (bindingResult.hasErrors()) {
+        String errorMsg = bindingResult.getFieldError().getDefaultMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMsg);
+      }
+
+      return ResponseEntity.status(HttpStatus.OK).body(service.update(id, buyer));
+    } catch (Exception e) {
+      if (e.getMessage().equals("BUYER_NOT_FOUND")) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+      }
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
     }
   }

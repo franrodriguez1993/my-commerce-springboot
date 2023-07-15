@@ -12,7 +12,9 @@ public interface ProductService extends BaseService<Product, Long> {
 
   ProductDTO create(ProductBodyDTO product) throws Exception;
 
-  Page<Product> listByBrand(String brand, Pageable pageable) throws Exception;
+  ProductDTO update(Long id, ProductBodyDTO product) throws Exception;
 
-  Page<Product> listByCategory(String category, Pageable pageable) throws Exception;
+  Page<ProductDTO> listByBrand(String brand, Pageable pageable) throws Exception;
+
+  Page<ProductDTO> listByCategory(String category, Pageable pageable) throws Exception;
 }
