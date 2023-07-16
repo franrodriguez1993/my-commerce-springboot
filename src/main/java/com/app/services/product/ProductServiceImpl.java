@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.app.dto.product.ProductBodyDTO;
 import com.app.dto.product.ProductDTO;
@@ -18,6 +19,7 @@ import com.app.repositories.BrandRepository;
 import com.app.repositories.CategoryRepository;
 import com.app.repositories.ProductRepository;
 import com.app.services.base.BaseServiceImpl;
+import com.app.util.ImageKitManager;
 
 @Service
 public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implements ProductService {
@@ -30,6 +32,9 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 
   @Autowired
   CategoryRepository categoryRepository;
+
+  @Autowired
+  ImageKitManager ikm;
 
   public ProductServiceImpl(BaseRepository<Product, Long> baseRepository) {
     super(baseRepository);
@@ -118,6 +123,8 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     }
   }
 
+  /* UPDATE PRODUCT */
+
   @Override
   public ProductDTO update(Long id, ProductBodyDTO productdto) throws Exception {
     try {
@@ -146,6 +153,28 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
       updateProduct.setCategory(category.get());
 
       return ProductMapper.INSTANCE.toProductDTO(productRepository.save(updateProduct));
+
+    } catch (Exception e) {
+      throw new Exception(e.getMessage());
+    }
+  }
+
+  /* UPLOAD IMAGE */
+
+  @Override
+  public ProductDTO uploadImage(Long id, MultipartFile file) throws Exception {
+    try {
+      Optional<Product> po = productRepository.findById(id);
+
+      if (!po.isPresent()) {
+        throw new Exception("PRODUCT_NOT_FOUND");
+      }
+      Product product = po.get();
+
+      String imageUrl = ikm.uploadImage(file);
+      product.setImage(imageUrl);
+
+      return ProductMapper.INSTANCE.toProductDTO(productRepository.save(product));
 
     } catch (Exception e) {
       throw new Exception(e.getMessage());

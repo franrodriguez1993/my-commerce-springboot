@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.app.dto.product.ProductBodyDTO;
 import com.app.entities.Product;
@@ -100,6 +101,20 @@ public class ProductController extends BaseControllerImpl<Product, ProductServic
       } else {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("BAD GATEWAY");
       }
+    }
+  }
+
+  /* UPLOAD IMAGE PRODUCT */
+  @PostMapping("/{id}/image")
+  public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(service.uploadImage(id, file));
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      if (e.getMessage().equals("PRODUCT_NOT_FOUND")) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+      }
+      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("BAD GATEWAY");
     }
   }
 
