@@ -1,4 +1,4 @@
-package com.app.dto.user;
+package com.app.dto.product;
 
 import com.app.dto._DTOEntity;
 
@@ -11,10 +11,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressDTO extends _DTOEntity {
+public class BranchProductBodyDTO extends _DTOEntity {
 
-  private Long id;
-  private String street;
-  private int number;
-  private String city;
+  private Long product_id;
+  private Long branch_id;
+  private int quantity;
 }

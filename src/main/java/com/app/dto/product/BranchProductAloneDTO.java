@@ -1,8 +1,7 @@
-package com.app.dto.user;
+package com.app.dto.product;
 
 import com.app.dto._DTOEntity;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class BuyerBodyDTO extends _DTOEntity {
+public class BranchProductAloneDTO extends _DTOEntity {
   private Long id;
-  @Valid
-  private UserBodyDTO user;
-  private boolean creditCard;
+  private ProductDTO product;
+  private int quantity;
 }

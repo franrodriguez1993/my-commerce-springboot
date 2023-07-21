@@ -1,5 +1,7 @@
 package com.app.dto.product;
 
+import java.util.List;
+
 import com.app.dto._DTOEntity;
 
 import jakarta.validation.constraints.Max;
@@ -28,10 +30,7 @@ public class ProductBodyDTO extends _DTOEntity {
   @Max(value = 999999, message = "Max price should be 999999")
   private double price;
 
-  @NotNull(message = "Stock cannot be null")
-  @Min(value = 1, message = "Minimum stock should be 1")
-  @Max(value = 99999, message = "Max stock should be 99999")
-  private int stock;
+  private List<BranchProductBodyDTO> stock;
 
   private String image;
 

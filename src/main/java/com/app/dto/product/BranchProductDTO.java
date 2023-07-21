@@ -1,6 +1,7 @@
-package com.app.dto.user;
+package com.app.dto.product;
 
 import com.app.dto._DTOEntity;
+import com.app.dto.branch.BranchDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +12,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressDTO extends _DTOEntity {
+public class BranchProductDTO extends _DTOEntity {
 
   private Long id;
-  private String street;
-  private int number;
-  private String city;
+  private ProductDTO product;
+  private BranchDTO branch;
+  private int quantity;
 }

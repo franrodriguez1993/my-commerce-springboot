@@ -9,6 +9,6 @@ import com.app.entities.Order;
 
 public interface OrderRepository extends BaseRepository<Order, Long> {
 
-  @Query(value = "SELECT * FROM order_sell WHERE buyer_id= :bid", nativeQuery = true)
-  Page<Order> listOrders(@Param("bid") Long bid, Pageable pageable);
+  @Query(value = "SELECT * FROM order_sell WHERE user_id= :uid", nativeQuery = true)
+  Page<Order> listOrders(@Param("uid") Long uid, Pageable pageable);
 }

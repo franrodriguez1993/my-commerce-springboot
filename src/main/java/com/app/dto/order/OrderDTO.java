@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.app.dto._DTOEntity;
-import com.app.dto.user.BuyerDTO;
+import com.app.dto.branch.BranchDTO;
+import com.app.dto.user.UserDTO;
 
 import lombok.*;
 
@@ -15,7 +16,8 @@ import lombok.*;
 public class OrderDTO extends _DTOEntity {
 
   private Long id;
-  private BuyerDTO buyer;
+  private UserDTO user;
+  private BranchDTO branch;
   private int installments;
   private Date date;
   private List<OrderDetailsDTO> details;

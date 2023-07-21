@@ -12,7 +12,8 @@ import lombok.*;
 @AllArgsConstructor
 public class OrderBodyDTO extends _DTOEntity {
 
-  private Long buyer_id;
+  private Long user_id;
+  private Long branch_id;
   private boolean creditCard;
   private int installments;
   private List<OrderDetailBodyDTO> details;

@@ -14,7 +14,8 @@ public interface OrderMapper {
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "date", ignore = true)
-  @Mapping(target = "buyer", ignore = true)
+  @Mapping(target = "user", ignore = true)
+  @Mapping(target = "branch", ignore = true)
   Order toOrderFroOrderBodyDTO(OrderBodyDTO obdto);
 
   @Mapping(target = "id", ignore = true)

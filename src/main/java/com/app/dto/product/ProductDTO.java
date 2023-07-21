@@ -15,7 +15,6 @@ public class ProductDTO extends _DTOEntity {
   private Long id;
   private String name;
   private double price;
-  private int stock;
   private String image;
   private double weight;
   private CategoryDTO category;

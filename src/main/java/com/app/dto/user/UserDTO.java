@@ -13,9 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class UserDTO extends _DTOEntity {
+  private Long id;
   private String name;
   private String lastname;
   private String email;
   private int dni;
   private AddressDTO address;
+  private String rol;
 }

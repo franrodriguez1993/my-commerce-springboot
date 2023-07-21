@@ -17,7 +17,8 @@ public interface ProductService extends BaseService<Product, Long> {
 
   ProductDTO uploadImage(Long id, MultipartFile file) throws Exception;
 
-  Page<ProductDTO> listByBrand(String brand, Pageable pageable) throws Exception;
+  Page<ProductDTO> listProducts(String brand, String category, Pageable pageable) throws Exception;
 
-  Page<ProductDTO> listByCategory(String category, Pageable pageable) throws Exception;
+  ProductDTO findByID(Long id) throws Exception;
+
 }

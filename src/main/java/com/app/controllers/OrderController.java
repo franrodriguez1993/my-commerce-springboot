@@ -28,11 +28,12 @@ public class OrderController extends BaseControllerImpl<Order, OrderServiceImpl>
       return ResponseEntity.status(HttpStatus.CREATED).body(service.create(order));
 
     } catch (Exception e) {
-      if (e.getMessage().equals("PRODUCT_NOT_FOUND") || e.getMessage().equals("BUYER_NOT_FOUND")) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-      } else if (e.getMessage().equals("INVALID_QUANTITY") || e.getMessage().equals("INVALID_AMOUNT")
-          || e.getMessage().equals("INVALID_TOTAL_AMOUNT")) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+      String msg = e.getMessage();
+      if (msg.equals("PRODUCT_NOT_FOUND") || msg.equals("BUYER_NOT_FOUND") || msg.equals("BRANCH_NOT_FOUND")) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+      } else if (msg.equals("INVALID_QUANTITY") || msg.equals("INVALID_AMOUNT")
+          || msg.equals("INVALID_TOTAL_AMOUNT") || msg.equals("PRODUCT_HAS_NO_STOCK_IN_BRANCH")) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
       } else {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
       }

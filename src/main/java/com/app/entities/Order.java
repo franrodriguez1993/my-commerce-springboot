@@ -29,8 +29,12 @@ import lombok.ToString;
 public class Order extends BaseEntity {
 
   @ManyToOne
-  @JoinColumn(name = "buyer_id")
-  private Buyer buyer;
+  @JoinColumn(name = "user_id")
+  private User user;
+
+  @ManyToOne
+  @JoinColumn(name = "branch_id")
+  private Branch branch;
 
   @Column(name = "credit_card", nullable = false)
   private boolean creditCard;

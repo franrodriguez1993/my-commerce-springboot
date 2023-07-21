@@ -13,26 +13,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.dto.user.BuyerBodyDTO;
-import com.app.entities.Buyer;
-import com.app.services.buyer.BuyerServiceImpl;
+import com.app.dto.user.UserBodyDTO;
+import com.app.entities.User;
+import com.app.services.user.UserServiceImpl;
 
 import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping(path = "api/v1/buyer")
-public class BuyerController extends BaseControllerImpl<Buyer, BuyerServiceImpl> {
+@RequestMapping(path = "api/v1/user")
+public class UserController extends BaseControllerImpl<User, UserServiceImpl> {
 
   @PostMapping("")
-  public ResponseEntity<?> save(@Valid @RequestBody BuyerBodyDTO buyer, BindingResult bindingResult) {
+  public ResponseEntity<?> register(@Valid @RequestBody UserBodyDTO user, BindingResult bindingResult) {
     try {
       if (bindingResult.hasErrors()) {
         String errorMsg = bindingResult.getFieldError().getDefaultMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMsg);
       }
 
-      return ResponseEntity.status(HttpStatus.OK).body(service.register(buyer));
+      return ResponseEntity.status(HttpStatus.CREATED).body(service.register(user));
     } catch (Exception e) {
       switch (e.getMessage()) {
         case "EMAIL_IN_USE": {
@@ -56,24 +56,24 @@ public class BuyerController extends BaseControllerImpl<Buyer, BuyerServiceImpl>
       return ResponseEntity.status(HttpStatus.OK).body(service.getById(id));
 
     } catch (Exception e) {
-      if (e.getMessage().equals("BUYER_NOT_FOUND")) {
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("BUYER_NOT_FOUND");
+      if (e.getMessage().equals("USER_NOT_FOUND")) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
       }
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
     }
   }
 
   @GetMapping("")
-  public ResponseEntity<?> listBuyers(Pageable pageable) {
+  public ResponseEntity<?> list(Pageable pageable) {
     try {
-      return ResponseEntity.status(HttpStatus.OK).body(service.listBuyers(pageable));
+      return ResponseEntity.status(HttpStatus.OK).body(service.list(pageable));
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
     }
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<?> update(@Valid @RequestBody BuyerBodyDTO buyer, @PathVariable Long id,
+  public ResponseEntity<?> update(@Valid @RequestBody UserBodyDTO user, @PathVariable Long id,
       BindingResult bindingResult) {
     try {
 
@@ -82,10 +82,13 @@ public class BuyerController extends BaseControllerImpl<Buyer, BuyerServiceImpl>
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMsg);
       }
 
-      return ResponseEntity.status(HttpStatus.OK).body(service.update(id, buyer));
+      return ResponseEntity.status(HttpStatus.OK).body(service.update(id, user));
     } catch (Exception e) {
-      if (e.getMessage().equals("BUYER_NOT_FOUND")) {
+      String msg = e.getMessage();
+      if (msg.equals("USER_NOT_FOUND")) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+      } else if (msg.equals("MAIL_IN_USE") || msg.equals("DNI_IN_USE")) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
       }
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
     }

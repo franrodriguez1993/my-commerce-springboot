@@ -1,6 +1,7 @@
-package com.app.dto.user;
+package com.app.dto.branch;
 
 import com.app.dto._DTOEntity;
+import com.app.dto.user.AddressDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BuyerDTO extends _DTOEntity {
+public class BranchDTO extends _DTOEntity {
 
   private Long id;
-  private UserDTO user;
-  private boolean creditCard;
-
+  private AddressDTO address;
 }

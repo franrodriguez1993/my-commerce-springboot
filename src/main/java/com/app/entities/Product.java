@@ -1,21 +1,25 @@
 package com.app.entities;
 
+import java.util.List;
+
 import org.hibernate.envers.Audited;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "product")
-@Getter
 @Setter
-@ToString
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "stock", callSuper = false)
 @Audited
 public class Product extends BaseEntity {
 
@@ -24,9 +28,6 @@ public class Product extends BaseEntity {
 
   @Column
   private double price;
-
-  @Column
-  private int stock;
 
   @Column
   private String image;
@@ -41,4 +42,8 @@ public class Product extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "category_id")
   private Category category;
+
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnoreProperties("product")
+  private List<BranchProduct> stock;
 }

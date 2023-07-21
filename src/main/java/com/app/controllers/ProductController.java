@@ -38,7 +38,8 @@ public class ProductController extends BaseControllerImpl<Product, ProductServic
 
       return ResponseEntity.status(HttpStatus.CREATED).body(service.create(product));
     } catch (Exception e) {
-      if (e.getMessage().equals("CATEGORY_NOT_FOUND") || e.getMessage().equals("BRAND_NOT_FOUND")) {
+      String msg = e.getMessage();
+      if (msg.equals("CATEGORY_NOT_FOUND") || msg.equals("BRAND_NOT_FOUND") || msg.equals("BRANCH_NOT_FOUND")) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
       } else {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
@@ -71,36 +72,32 @@ public class ProductController extends BaseControllerImpl<Product, ProductServic
     }
   }
 
-  /* LIST BY BRAND */
+  /* LIST PRODUCTS */
+  @GetMapping("")
+  public ResponseEntity<?> listProducts(@RequestParam(required = false) String brand,
+      @RequestParam(required = false) String category, Pageable pageable) {
 
-  @GetMapping("/brand")
-  public ResponseEntity<?> findByBrand(@RequestParam String brand, Pageable pageable) {
     try {
-
-      return ResponseEntity.status(HttpStatus.OK).body(service.listByBrand(brand, pageable));
-
+      return ResponseEntity.status(HttpStatus.OK).body(service.listProducts(brand, category, pageable));
     } catch (Exception e) {
-      if (e.getMessage().equals("BRAND_NOT_FOUND")) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BRAND_NOT_FOUND");
-      } else {
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("BAD GATEWAY");
+      String msg = e.getMessage();
+
+      if (msg.equals("BRAND_NOT_FOUND") || msg.equals("CATEGORY_NOT_FOUND")) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
       }
+      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
     }
   }
-  /* LIST BY CATEGORY */
 
-  @GetMapping("/category")
-  public ResponseEntity<?> findByCategory(@RequestParam String category, Pageable pageable) {
+  @GetMapping("/{id}")
+  public ResponseEntity<?> findByID(@PathVariable Long id) {
     try {
-
-      return ResponseEntity.status(HttpStatus.OK).body(service.listByCategory(category, pageable));
-
+      return ResponseEntity.status(HttpStatus.OK).body(service.findByID(id));
     } catch (Exception e) {
-      if (e.getMessage().equals("CATEGORY_NOT_FOUND")) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CATEGORY_NOT_FOUND");
-      } else {
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("BAD GATEWAY");
+      if (e.getMessage().equals("PRODUCT_NOT_FOUND")) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
       }
+      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("SERVER_ERROR");
     }
   }
 
