@@ -17,4 +17,5 @@ public interface UserService extends BaseService<User, Long> {
   Page<UserDTO> list(Pageable pageable) throws Exception;
 
   UserDTO getById(Long id) throws Exception;
+
 }

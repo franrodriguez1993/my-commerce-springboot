@@ -68,8 +68,13 @@ public class StaffServiceImpl extends BaseServiceImpl<Staff, Long> implements St
 
       Staff staff = StaffMapper.INSTANCE.toStaff(staffbody);
 
+      String staffRole = staffbody.getRol();
+
+      if (!staffRole.equals("supervisor") && !staffRole.equals("rrhh") && !staffRole.equals("storer")) {
+        throw new Exception("INVALID_ROL");
+      }
       // updating rol:
-      user.setRol(staffbody.getRol());
+      user.setRol(staffRole);
       userRepository.save(user);
 
       staff.setBranch(branch);
@@ -130,6 +135,12 @@ public class StaffServiceImpl extends BaseServiceImpl<Staff, Long> implements St
       }
 
       Staff staff = StaffMapper.INSTANCE.toStaff(staffbody);
+
+      // check if the rol is valid:
+      String role = staffbody.getRol();
+      if (!role.equals("rrhh") && !role.equals("supervisor") && !role.equals("storer")) {
+        throw new Exception("INVALID_ROL");
+      }
 
       // check if rol has changed:
       if (!oldStaff.getUser().getRol().equals(staffbody.getRol())) {

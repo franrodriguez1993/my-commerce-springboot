@@ -3,6 +3,7 @@ package com.app.controllers;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,6 +65,7 @@ public class UserController extends BaseControllerImpl<User, UserServiceImpl> {
   }
 
   @GetMapping("")
+  @PreAuthorize("hasRole('rrhh')")
   public ResponseEntity<?> list(Pageable pageable) {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.list(pageable));

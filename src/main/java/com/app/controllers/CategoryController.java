@@ -3,6 +3,7 @@ package com.app.controllers;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import jakarta.validation.Valid;
 public class CategoryController extends BaseControllerImpl<Category, CategoryServiceImpl> {
 
   @PostMapping("")
+  @PreAuthorize("hasRole('supervisor')")
   public ResponseEntity<?> save(@Valid @RequestBody CategoryDTO categorydto, BindingResult bindingResult) {
     try {
 
@@ -43,6 +45,7 @@ public class CategoryController extends BaseControllerImpl<Category, CategorySer
   }
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasRole('supervisor') or hasRole('storer')")
   public ResponseEntity<?> findByID(@PathVariable Long id) {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.findByID(id));
@@ -56,6 +59,7 @@ public class CategoryController extends BaseControllerImpl<Category, CategorySer
   }
 
   @GetMapping("")
+  @PreAuthorize("hasRole('supervisor') or hasRole('storer')")
   public ResponseEntity<?> listAll(Pageable pageable) {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.listAll(pageable));

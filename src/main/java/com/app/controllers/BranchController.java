@@ -3,6 +3,7 @@ package com.app.controllers;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class BranchController extends BaseControllerImpl<Branch, BranchServiceIm
 
   /* CREATE A BRANCH */
   @PostMapping("")
+  @PreAuthorize("hasRole('admin')")
   public ResponseEntity<?> save(@Valid @RequestBody BranchBodyDTO branch, BindingResult bindingResult)
       throws Exception {
     try {
@@ -44,6 +46,7 @@ public class BranchController extends BaseControllerImpl<Branch, BranchServiceIm
 
   /* LIST ALL BRANCHES */
   @GetMapping("")
+  @PreAuthorize("hasRole('supervisor') or hasRole('storer') or hasRole('rrhh')")
   public ResponseEntity<?> list(Pageable pegeable) throws Exception {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.list(pegeable));
@@ -53,6 +56,7 @@ public class BranchController extends BaseControllerImpl<Branch, BranchServiceIm
   }
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasRole('supervisor') or hasRole('storer') or hasRole('rrhh')")
   public ResponseEntity<?> getById(@PathVariable Long id) throws Exception {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
@@ -67,6 +71,7 @@ public class BranchController extends BaseControllerImpl<Branch, BranchServiceIm
 
   /* GET STOCK BY BRANCH */
   @GetMapping("/{id}/stock")
+  @PreAuthorize("hasRole('supervisor') or hasRole('storer')")
   public ResponseEntity<?> getStockById(@PathVariable Long id, Pageable pageable) throws Exception {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.listStockByBranch(id, pageable));
@@ -82,6 +87,7 @@ public class BranchController extends BaseControllerImpl<Branch, BranchServiceIm
   /* UPDATE PRODUCT BRANCH STOCK */
 
   @PutMapping("/{bid}/stock/{pid}")
+  @PreAuthorize("hasRole('supervisor') or hasRole('storer')")
   public ResponseEntity<?> updateStock(@PathVariable Long bid, @PathVariable Long pid,
       @RequestBody BranchProductBodyDTO bpbdto)
       throws Exception {

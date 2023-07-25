@@ -10,12 +10,18 @@ import org.hibernate.envers.RevisionTimestamp;
 import com.app.config.CustomRevisionListener;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "REVISION_INFO")
 @RevisionEntity(CustomRevisionListener.class)
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Revision implements Serializable {
 
   @Id

@@ -3,6 +3,7 @@ package com.app.controllers;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import jakarta.validation.Valid;
 public class BrandController extends BaseControllerImpl<Brand, BrandServiceImpl> {
 
   @PostMapping("")
+  @PreAuthorize("hasRole('supervisor')")
   public ResponseEntity<?> save(@Valid @RequestBody BrandDTO branddto, BindingResult bindingResult) {
     try {
 
@@ -43,6 +45,7 @@ public class BrandController extends BaseControllerImpl<Brand, BrandServiceImpl>
   }
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasRole('supervisor') or hasRole('storer')")
   public ResponseEntity<?> getByID(@PathVariable Long id) {
     try {
 
@@ -56,6 +59,7 @@ public class BrandController extends BaseControllerImpl<Brand, BrandServiceImpl>
   }
 
   @GetMapping("")
+  @PreAuthorize("hasRole('supervisor') or hasRole('storer')")
   public ResponseEntity<?> getAll(Pageable pageable) {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.findAll(pageable));

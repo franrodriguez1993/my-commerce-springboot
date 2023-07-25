@@ -3,6 +3,7 @@ package com.app.controllers;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class ProductController extends BaseControllerImpl<Product, ProductServic
   /* CREATE PRODUCT */
 
   @PostMapping("")
+  @PreAuthorize("hasRole('storer')")
   public ResponseEntity<?> create(@Valid @RequestBody ProductBodyDTO product, BindingResult bindingResult) {
     try {
       if (bindingResult.hasErrors()) {
@@ -50,6 +52,7 @@ public class ProductController extends BaseControllerImpl<Product, ProductServic
   /* UPDATE PRODUCT */
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasRole('storer')")
   public ResponseEntity<?> update(@Valid @RequestBody ProductBodyDTO product, @PathVariable Long id,
       BindingResult bindingResult) {
     try {
@@ -103,6 +106,7 @@ public class ProductController extends BaseControllerImpl<Product, ProductServic
 
   /* UPLOAD IMAGE PRODUCT */
   @PostMapping("/{id}/image")
+  @PreAuthorize("hasRole('storer')")
   public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.uploadImage(id, file));
